@@ -9,7 +9,7 @@ There are my [solutions](#solutions) of [problems](problems.pdf) from course of 
    * [Dependencies](#dependencies)
       * [Build dependencies](#build-dependencies)
    * [Installation](#installation)
-      * [**Build & Run** From Source Code](#build-&-run-from-source-code)
+      * [Build And Run From Source Code](#build-and-run-from-source-code)
       * [Optional](#optional)
    * [Uninstallation](#uninstallation)
       * [Delete *math-logic*](#delete-math-logic)
@@ -28,8 +28,8 @@ There are my [solutions](#solutions) of [problems](problems.pdf) from course of 
 **Note:** This tools contains in [Haskell Platform](https://www.haskell.org/platform/).   
 
 ## Installation
-### **Build & Run** From Source Code
-1. Make sure you have installed all [**Dependencies**](#dependencies).
+### Build And Run From Source Code
+1. Make sure you have installed all [Dependencies](#dependencies).
 
 2. **Clone** sourse code.
 
@@ -54,7 +54,7 @@ There are my [solutions](#solutions) of [problems](problems.pdf) from course of 
 
 ## Uninstallation
 ### Delete math-logic
-1. Run
+1. **Run**.
 	
 	`$ rm -Rf <path>` 
 
