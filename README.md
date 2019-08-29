@@ -12,7 +12,7 @@ There are my [solutions](#solutions) of [problems](problems.pdf) from course of 
       * [Build And Run From Source Code](#build-and-run-from-source-code)
       * [Optional](#optional)
    * [Uninstallation](#uninstallation)
-      * [Delete *math-logic*](#delete-math-logic)
+      * [Delete math-logic](#delete-math-logic)
    * [Problems](#problems)
       * [Solutions](#solutions)
 	  * [Suppporting projects](#supporting-projects)
