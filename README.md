@@ -1,6 +1,6 @@
 # math-logic
 ## Description
-There are my [solutions](#solutions) of [problems](problems.pdf) from course of mathematical logic in ITMO, 2019 <br/>
+> There are my [solutions](#solutions) of [problems](problems.pdf) from course of mathematical logic in ITMO, 2019 <br/>
 
 ## Table Of Contents
 <!--ts-->
