@@ -23,7 +23,7 @@ data LineProof = Axiom { getValue :: Int, getExpression :: Expression }
                deriving (Eq, Ord)
 
 instance Show LineProof where
-    show (Axiom val expr) = "Ax. sch. " ++ (show val) ++ "] " ++ (show expr)
-    show (Hypothesis val expr) = "Hypothesis " ++ (show val) ++ "] " ++ (show expr)
-    show (ModusPonens fi se expr) = "M.P. " ++ (show fi) ++ ", " ++ (show se) ++ "] " ++ (show expr)
-    show (MyNothing expr) = "MyNothing] " ++ (show expr)
+show (Axiom val expr) = "Ax. sch. " ++ (show val) ++ "] " ++ (show expr)
+show (Hypothesis val expr) = "Hypothesis " ++ (show val) ++ "] " ++ (show expr)
+show (ModusPonens fi se expr) = "M.P. " ++ (show fi) ++ ", " ++ (show se) ++ "] " ++ (show expr)
+show (MyNothing expr) = "MyNothing] " ++ (show expr)

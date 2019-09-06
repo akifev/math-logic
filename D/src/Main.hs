@@ -183,43 +183,28 @@ worker result' variablesExpr flag = do
     let hyp1 = minimizeContexts hyp2 []
     let hyp0 = minimizeContexts hyp1 []
 
-    {-
-    putStrLn $ unlines $ map show hyp3
-    putStrLn $ unlines $ map show hyp2
-    putStrLn $ unlines $ map show hyp1
-    putStrLn $ unlines $ map show hyp0
-    putStrLn "========="
-    -}
-
     let context3 = List.filter (checkCorrect . getContext) hyp3
     let context2 = List.filter (checkCorrect . getContext) hyp2
     let context1 = List.filter (checkCorrect . getContext) hyp1
     let context0 = List.filter (checkCorrect . getContext) hyp0
-    {-
-    putStrLn $ unlines $ map show context3
-    putStrLn $ unlines $ map show context2
-    putStrLn $ unlines $ map show context1
-    putStrLn $ unlines $ map show context0
-    putStrLn "----"
-    -}
 
     let answer  | (not . null ) context0 = do
-                                            putStrLn $ unlines $ map show (genSmartProof (head context0) result)
-                                            putStrLn $ show $ getContext $ head context0
+                                            putStr $ showProblem ((getContext . head) context0) result
+                                            putStr $ unlines $ map show (genSmartProof (head context0) result)
                                             exitSuccess
                 | (not . null ) context1 = do
-                                            putStrLn $ unlines $ map show (genSmartProof (head context1) result)
-                                            putStrLn $ show $ getContext $ head context1
+                                            putStr $ showProblem ((getContext . head) context1) result
+                                            putStr $ unlines $ map show (genSmartProof (head context1) result)
                                             exitSuccess
                 | (not . null ) context2 = do
-                                            putStrLn $ unlines $ map show (genSmartProof (head context2) result)
-                                            putStrLn $ show $ getContext $ head context2
+                                            putStr $ showProblem ((getContext . head) context2) result
+                                            putStr $ unlines $ map show (genSmartProof (head context2) result)
                                             exitSuccess
                 | (not . null ) context3 = do
-                                            putStrLn $ unlines $ map show (genSmartProof (head context3) result)
-                                            putStrLn $ show $ getContext $ head context3
+                                            putStr $ showProblem ((getContext . head) context3) result
+                                            putStr $ unlines $ map show (genSmartProof (head context3) result)
                                             exitSuccess
-                | otherwise = putStrLn ""
+                | otherwise = putStr ""
     answer
 
 -- Main
@@ -264,81 +249,46 @@ genSimpleProof (Impl a b) context   | apply b context =
                                                     (Impl a b)
                                                     ]
                                     | otherwise       =
-                                        genSimpleProof (Impl a (Not a)) context
+                                        genSimpleProof (Not a) context
+                                        ++ genSimpleProof (Not b) context
                                         ++ [
-                                            (Impl a (Impl (Not a) a)),
-                                            (Impl a (Impl (Not b) a)),
-                                            (Impl (Impl a (Impl (Not b) a)) (Impl a (Impl a (Impl (Not b) a)))),
-                                            (Impl a (Impl a (Impl (Not b) a))),
-                                            (Impl (Impl a (Impl (Not b) a)) (Impl (Not a) (Impl a (Impl (Not b) a)))),
-                                            (Impl (Impl (Impl a (Impl (Not b) a)) (Impl (Not a) (Impl a (Impl (Not b) a)))) (Impl a (Impl (Impl a (Impl (Not b) a)) (Impl (Not a) (Impl a (Impl (Not b) a)))))),
-                                            (Impl a (Impl (Impl a (Impl (Not b) a)) (Impl (Not a) (Impl a (Impl (Not b) a))))),
-                                            (Impl (Impl a (Impl a (Impl (Not b) a))) (Impl (Impl a (Impl (Impl a (Impl (Not b) a)) (Impl (Not a) (Impl a (Impl (Not b) a))))) (Impl a (Impl (Not a) (Impl a (Impl (Not b) a)))))),
-                                            (Impl (Impl a (Impl (Impl a (Impl (Not b) a)) (Impl (Not a) (Impl a (Impl (Not b) a))))) (Impl a (Impl (Not a) (Impl a (Impl (Not b) a))))),
-                                            (Impl a (Impl (Not a) (Impl a (Impl (Not b) a)))),
-                                            (Impl (Impl (Not a) a) (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a)))),
-                                            (Impl (Impl (Impl (Not a) a) (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a)))) (Impl a (Impl (Impl (Not a) a) (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a)))))),
-                                            (Impl a (Impl (Impl (Not a) a) (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a))))),
-                                            (Impl (Impl a (Impl (Not a) a)) (Impl (Impl a (Impl (Impl (Not a) a) (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a))))) (Impl a (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a)))))),
-                                            (Impl (Impl a (Impl (Impl (Not a) a) (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a))))) (Impl a (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a))))),
-                                            (Impl a (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a)))),
-                                            (Impl (Impl a (Impl (Not a) (Impl a (Impl (Not b) a)))) (Impl (Impl a (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a)))) (Impl a (Impl (Not a) (Impl (Not b) a))))),
-                                            (Impl (Impl a (Impl (Impl (Not a) (Impl a (Impl (Not b) a))) (Impl (Not a) (Impl (Not b) a)))) (Impl a (Impl (Not a) (Impl (Not b) a)))),
-                                            (Impl a (Impl (Not a) (Impl (Not b) a))),
-                                            (Impl (Not a) (Impl (Not b) (Not a))),
-                                            (Impl (Impl (Not a) (Impl (Not b) (Not a))) (Impl a (Impl (Not a) (Impl (Not b) (Not a))))),
-                                            (Impl a (Impl (Not a) (Impl (Not b) (Not a)))),
+                                            (Impl (Not a) (Impl a (Not a))),
+                                            (Impl a (Not a)),
+                                            (Impl (Not b) (Impl a (Not b))),
+                                            (Impl a (Not b)),
+                                            (Impl a (Impl a a)),
+                                            (Impl a (Impl (Impl a a) a)),
+                                            (Impl (Impl a (Impl a a)) (Impl (Impl a (Impl (Impl a a) a)) (Impl a a))),
+                                            (Impl (Impl a (Impl (Impl a a) a)) (Impl a a)),
+                                            (Impl a a),
                                             (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))),
                                             (Impl (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl a (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))),
                                             (Impl a (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))),
-                                            (Impl (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))),
-                                            (Impl (Impl (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))) (Impl a (Impl (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))))),
-                                            (Impl a (Impl (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))))),
-                                            (Impl (Impl a (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Impl a (Impl (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))))) (Impl a (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))))),
-                                            (Impl (Impl a (Impl (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))))) (Impl a (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))))),
-                                            (Impl a (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))),
-                                            (Impl (Impl (Not a) (Impl (Not b) a)) (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))),
-                                            (Impl (Impl (Impl (Not a) (Impl (Not b) a)) (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))) (Impl a (Impl (Impl (Not a) (Impl (Not b) a)) (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))))),
-                                            (Impl a (Impl (Impl (Not a) (Impl (Not b) a)) (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))))),
-                                            (Impl (Impl a (Impl (Not a) (Impl (Not b) a))) (Impl (Impl a (Impl (Impl (Not a) (Impl (Not b) a)) (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))))) (Impl a (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))))),
-                                            (Impl (Impl a (Impl (Impl (Not a) (Impl (Not b) a)) (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))))) (Impl a (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))))),
-                                            (Impl a (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))),
-                                            (Impl (Impl a (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))) (Impl (Impl a (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))) (Impl a (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))))),
-                                            (Impl (Impl a (Impl (Impl (Not a) (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))) (Impl a (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))))),
-                                            (Impl a (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))),
-                                            (Impl (Impl (Not a) (Impl (Not b) (Not a))) (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b))))),
-                                            (Impl (Impl (Impl (Not a) (Impl (Not b) (Not a))) (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b))))) (Impl a (Impl (Impl (Not a) (Impl (Not b) (Not a))) (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b))))))),
-                                            (Impl a (Impl (Impl (Not a) (Impl (Not b) (Not a))) (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b)))))),
-                                            (Impl (Impl a (Impl (Not a) (Impl (Not b) (Not a)))) (Impl (Impl a (Impl (Impl (Not a) (Impl (Not b) (Not a))) (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b)))))) (Impl a (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b))))))),
-                                            (Impl (Impl a (Impl (Impl (Not a) (Impl (Not b) (Not a))) (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b)))))) (Impl a (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b)))))),
-                                            (Impl a (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b))))),
-                                            (Impl (Impl a (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl (Impl a (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b))))) (Impl a (Impl (Not a) (Not (Not b)))))),
-                                            (Impl (Impl a (Impl (Impl (Not a) (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl (Not a) (Not (Not b))))) (Impl a (Impl (Not a) (Not (Not b))))),
-                                            (Impl a (Impl (Not a) (Not (Not b)))),
+                                            (Impl a (Impl (Not b) a)),
+                                            (Impl (Impl a (Impl (Not b) a)) (Impl a (Impl a (Impl (Not b) a)))),
+                                            (Impl a (Impl a (Impl (Not b) a))),
+                                            (Impl (Impl a a) (Impl (Impl a (Impl a (Impl (Not b) a))) (Impl a (Impl (Not b) a)))),
+                                            (Impl (Impl a (Impl a (Impl (Not b) a))) (Impl a (Impl (Not b) a))),
+                                            (Impl a (Impl (Not b) a)),
+                                            (Impl (Not a) (Impl (Not b) (Not a))),
+                                            (Impl (Impl (Not a) (Impl (Not b) (Not a))) (Impl a (Impl (Not a) (Impl (Not b) (Not a))))),
+                                            (Impl a (Impl (Not a) (Impl (Not b) (Not a)))),
+                                            (Impl (Impl a (Not a)) (Impl (Impl a (Impl (Not a) (Impl (Not b) (Not a)))) (Impl a (Impl (Not b) (Not a))))),
+                                            (Impl (Impl a (Impl (Not a) (Impl (Not b) (Not a)))) (Impl a (Impl (Not b) (Not a)))),
+                                            (Impl a (Impl (Not b) (Not a))),
+                                            (Impl (Impl a (Impl (Not b) a)) (Impl (Impl a (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl a (Impl (Impl (Not b) (Not a)) (Not (Not b)))))),
+                                            (Impl (Impl a (Impl (Impl (Not b) a) (Impl (Impl (Not b) (Not a)) (Not (Not b))))) (Impl a (Impl (Impl (Not b) (Not a)) (Not (Not b))))),
+                                            (Impl a (Impl (Impl (Not b) (Not a)) (Not (Not b)))),
+                                            (Impl (Impl a (Impl (Not b) (Not a))) (Impl (Impl a (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl a (Not (Not b))))),
+                                            (Impl (Impl a (Impl (Impl (Not b) (Not a)) (Not (Not b)))) (Impl a (Not (Not b)))),
+                                            (Impl a (Not (Not b))),
                                             (Impl (Not (Not b)) b),
                                             (Impl (Impl (Not (Not b)) b) (Impl a (Impl (Not (Not b)) b))),
                                             (Impl a (Impl (Not (Not b)) b)),
-                                            (Impl (Impl (Not (Not b)) b) (Impl (Not a) (Impl (Not (Not b)) b))),
-                                            (Impl (Impl (Impl (Not (Not b)) b) (Impl (Not a) (Impl (Not (Not b)) b))) (Impl a (Impl (Impl (Not (Not b)) b) (Impl (Not a) (Impl (Not (Not b)) b))))),
-                                            (Impl a (Impl (Impl (Not (Not b)) b) (Impl (Not a) (Impl (Not (Not b)) b)))),
-                                            (Impl (Impl a (Impl (Not (Not b)) b)) (Impl (Impl a (Impl (Impl (Not (Not b)) b) (Impl (Not a) (Impl (Not (Not b)) b)))) (Impl a (Impl (Not a) (Impl (Not (Not b)) b))))),
-                                            (Impl (Impl a (Impl (Impl (Not (Not b)) b) (Impl (Not a) (Impl (Not (Not b)) b)))) (Impl a (Impl (Not a) (Impl (Not (Not b)) b)))),
-                                            (Impl a (Impl (Not a) (Impl (Not (Not b)) b))),
-                                            (Impl (Impl (Not a) (Not (Not b))) (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b))),
-                                            (Impl (Impl (Impl (Not a) (Not (Not b))) (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b))) (Impl a (Impl (Impl (Not a) (Not (Not b))) (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b))))),
-                                            (Impl a (Impl (Impl (Not a) (Not (Not b))) (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b)))),
-                                            (Impl (Impl a (Impl (Not a) (Not (Not b)))) (Impl (Impl a (Impl (Impl (Not a) (Not (Not b))) (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b)))) (Impl a (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b))))),
-                                            (Impl (Impl a (Impl (Impl (Not a) (Not (Not b))) (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b)))) (Impl a (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b)))),
-                                            (Impl a (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b))),
-                                            (Impl (Impl a (Impl (Not a) (Impl (Not (Not b)) b))) (Impl (Impl a (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b))) (Impl a (Impl (Not a) b)))),
-                                            (Impl (Impl a (Impl (Impl (Not a) (Impl (Not (Not b)) b)) (Impl (Not a) b))) (Impl a (Impl (Not a) b))),
-                                            (Impl a (Impl (Not a) b))
+                                            (Impl (Impl a (Not (Not b))) (Impl (Impl a (Impl (Not (Not b)) b)) (Impl a b))),
+                                            (Impl (Impl a (Impl (Not (Not b)) b)) (Impl a b)),
+                                            (Impl a b)
                                             ]
-                                            ++ [
-                                                (Impl (Impl a (Not a)) (Impl (Impl a (Impl (Not a) b)) (Impl a b))),
-                                                (Impl (Impl a (Impl (Not a) b)) (Impl a b)),
-                                                (Impl a b)
-                                                ]
                                         
 genSimpleProof (Not (And a b)) context  | apply a context = 
                                                 genSimpleProof (Not b) context
@@ -407,7 +357,6 @@ genSimpleProof (Not (Or a b)) context = [
                                         (Not (Or a b))
                                         ]
 
--- OK !!!!!!!!!!!!!!!
 genSimpleProof (Not (Impl a b)) context = 
                                        genSimpleProof a context
                                     ++ genSimpleProof (Not b) context
@@ -457,24 +406,20 @@ genSimpleProof (Not (Impl a b)) context =
                                         (Not (Impl a b))
                                         ]
 
-genSimpleProof x@(Var a) context = [x]
-genSimpleProof x@(Not (Var a)) context = [x]
-                                
 genSimpleProof (Not (Not a)) context = 
-                        genSimpleProof a context
-                    ++ [
-                        (Impl a (Impl (Not a) a)),
-                        (Impl (Not a) a),
-                        (Impl (Not a) (Impl (Not a) (Not a))),
-                        (Impl (Impl (Not a) (Impl (Not a) (Not a))) (Impl (Impl (Not a) (Impl (Impl (Not a) (Not a)) (Not a))) (Impl (Not a) (Not a)))),
-                        (Impl (Impl (Not a) (Impl (Impl (Not a) (Not a)) (Not a))) (Impl (Not a) (Not a))),
-                        (Impl (Not a) (Impl (Impl (Not a) (Not a)) (Not a))),
-                        (Impl (Not a) (Not a)),
-                        (Impl (Not a) (Not a)),
-                        (Impl (Impl (Not a) a) (Impl (Impl (Not a) (Not a)) (Not (Not a)))),
-                        (Impl (Impl (Not a) (Not a)) (Not (Not a))),
-                        (Not (Not a))
-                        ]
+        genSimpleProof a context
+    ++ [
+        (Impl a (Impl (Not (Not (Not a))) a)),
+        (Impl (Not (Not (Not a))) a),
+        (Impl (Not (Not (Not a))) (Not a)),
+        (Impl (Impl (Not (Not (Not a))) a) (Impl (Impl (Not (Not (Not a))) (Not a)) (Not (Not (Not (Not a)))))),
+        (Impl (Impl (Not (Not (Not a))) (Not a)) (Not (Not (Not (Not a))))),
+        (Not (Not (Not (Not a)))),
+        (Impl (Not (Not (Not (Not a)))) (Not (Not a))),
+        (Not (Not a))
+        ]
+                                
+genSimpleProof a context = [a]
         
 
 aNotA expression = [

@@ -64,13 +64,14 @@ loop (expr:xs) contextMap !implMap !allAsMap !proof =
                                 index = Map.size allAsMap
                                 newAllAsMap = if isNothing (Map.lookup expr allAsMap) then (Map.insert expr index allAsMap) else allAsMap
                                 newProof = if (Map.size allAsMap /= Map.size newAllAsMap) then (exprAsLineProof : proof) else proof
-                                newImplMap = if isImpl expr then (Map.insertWith (++) (getTo expr) [(getFrom expr)] implMap) else implMap
+                                newImplMap = if isImpl expr && length proof /= length newProof then (Map.insertWith (++) (getTo expr) [(getFrom expr)] implMap) else implMap
                                     in
                                         loop xs contextMap newImplMap newAllAsMap newProof
 
 -- Output
-showProblem []     result = (show result) ++ "\n"
-showProblem [last] result = "|- " ++ (show last) ++ " -> " ++ (showProblem [] result)
+showProblem []            result = (show result) ++ "\n"
+showProblem [last]        result = "|- " ++ (show last) ++ " -> " ++ (showProblem [] result)
+showProblem [plast, last] result = (show plast) ++ " |- " ++ (show last) ++ " -> " ++ (showProblem [] result)
 showProblem (x:xs) result = (show x) ++ ", " ++ (showProblem xs result)
 
 -- Deduction
@@ -82,7 +83,7 @@ func answer (x:xs) hyp = case x of
                                              else
                                                  (expr : (Impl expr (Impl hyp expr)) : (Impl hyp expr) : []) ++ (func answer xs hyp)
                     (ModusPonens impl left expr) -> let
-                                                    l = getExpression (answer !! (left - 1))
+                                                    l = getExpression (answer !! (left))
                                                         in
                                                             ((Impl (Impl hyp l) (Impl (Impl hyp (Impl l expr)) (Impl hyp expr))) : (Impl (Impl hyp (Impl l expr)) (Impl hyp expr)) : (Impl hyp expr) : []) ++ (func answer xs hyp)
 

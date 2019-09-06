@@ -31,7 +31,7 @@ There are my [solutions](#solutions) of [problems](problems.pdf) from course of 
 ### Build And Run From Source Code
 1. Make sure you have installed all [Dependencies](#dependencies).
 
-2. **Clone** sourse code.
+2. **Clone** this repository.
 
     `$ git clone https://github.com/akifevdaniil/math-logic.git`
 	
