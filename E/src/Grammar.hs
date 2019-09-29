@@ -8,9 +8,9 @@ data Term = Plus Term Term
           | Zero
           deriving (Eq, Ord, Show)
           
-data Expression = Impl { getFrom :: Expression, getTo:: Expression }
-                | Or   { getFrom :: Expression, getTo:: Expression }
-                | And  { getFrom :: Expression, getTo:: Expression }
+data Expression = Impl { getFrom :: Expression, getTo :: Expression }
+                | Or   Expression Expression
+                | And  Expression Expression
                 | Not Expression
                 | ForAll String Expression
                 | Exist String Expression
