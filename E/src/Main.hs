@@ -6,7 +6,7 @@ import qualified Data.Set as Set
 import Lexer
 import Parser
 import Grammar
-import System.IO 
+import System.IO (isEOF)
 import System.Exit (exitSuccess)
 
 -- Hypothesis
@@ -245,8 +245,8 @@ checkNotFreeTerms x ((Var name)    :xs) = if x == name then False else True
 
 -----------------------------------------Build Answer---------------------------------------------------------------------------------------
 
-readProof inh context contextSet result lastIsResult implMap allAsSet index = do
-    checkEOF <- hIsEOF inh
+readProof context contextSet result lastIsResult implMap allAsSet index = do
+    checkEOF <- isEOF
     if checkEOF then do
         if lastIsResult then
             putStrLn "Proof is correct"
@@ -254,7 +254,7 @@ readProof inh context contextSet result lastIsResult implMap allAsSet index = do
             putStrLn "Required hasn’t been proven"
         exitSuccess
     else do
-        expr' <- hGetLine inh
+        expr' <- getLine
         let expr  = parseExpression $ alexScanTokens expr'
         let (newLastIsResult) | expr == result = True
                               | otherwise      = False
@@ -266,7 +266,7 @@ readProof inh context contextSet result lastIsResult implMap allAsSet index = do
         else do
             let newAllAsSet = Set.insert expr allAsSet 
             let newImplMap  = if isImpl expr then Map.insertWith (++) (getTo expr) [(getFrom expr)] implMap else implMap
-            readProof inh context contextSet result newLastIsResult newImplMap newAllAsSet (index + 1)
+            readProof context contextSet result newLastIsResult newImplMap newAllAsSet (index + 1)
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -276,12 +276,9 @@ showProblem [last] result = (show last) ++ " " ++ (showProblem [] result)
 showProblem (x:xs) result = (show x) ++ ", " ++ (showProblem xs result)
 
 main = do
-    inh <- openFile "input.txt" ReadMode
-    firstLine <- hGetLine inh
+    firstLine <- getLine
     let problem = parseProblem $ alexScanTokens firstLine
     let context = getContext problem
     let result  = getResult problem
     let contextSet = Set.fromList context
-    
-    readProof inh context contextSet result False Map.empty Set.empty 1
-    hClose inh
+    readProof context contextSet result False Map.empty Set.empty 1
