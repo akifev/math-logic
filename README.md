@@ -66,6 +66,7 @@ There are my [solutions](#solutions) of [problems](problems.pdf) from course of 
 2. [B. Минимизация доказательства](B)
 3. [C. Теорема Гливенко](C)
 4. [D. Полнота исчисления высказываний](D)
+5. [E. Проверка доказательства в формальной арифметике](E)
 ### Supporting projects
 - [Deductor](Deductor)
 - [Translator](Translator)
