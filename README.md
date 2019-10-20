@@ -33,7 +33,7 @@ There are my [solutions](#solutions) of [problems](problems.pdf) from course of 
 
 2. **Clone** this repository.
 
-    `$ git clone https://github.com/akifevdaniil/math-logic.git`
+    `$ git clone https://github.com/akifev/math-logic.git`
 	
 3. **Select** problem.
 
